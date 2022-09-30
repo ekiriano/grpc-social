@@ -1,0 +1,7 @@
+export enum Region {
+  ASIA_PACIFIC,
+  EUROPE_AFRICA,
+  AMERICAS,
+  UNKNOWN,
+  UNRECOGNIZED = -1,
+}
