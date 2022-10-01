@@ -1,3 +1,4 @@
+import { firstValueFrom } from 'rxjs';
 import {
   AuthenticationServiceControllerMethods,
   AuthenticationServiceController,
@@ -11,6 +12,7 @@ import {
 import { AuthenticationService } from './authentication.service';
 
 import { Controller } from '@nestjs/common';
+import { Metadata } from '@grpc/grpc-js';
 
 @Controller('authentication')
 @AuthenticationServiceControllerMethods()
@@ -25,7 +27,21 @@ export class AuthenticationController {
     return registerResponse;
   }
 
-  // login(data: LoginRequest): Promise<LoginResponse> {}
+  login(data: LoginRequest): Promise<LoginResponse> {
+    // const { user } = request;
+    const cookie = this.authenticationService.getCookieWithJwtToken(user.id);
 
-  // validate(data: ValidateRequest): Promise<ValidateResponse> {}
+    const metadata = new Metadata();
+    metadata.add('access-control-expose-headers', 'Set-Cookie');
+    metadata.add('Set-Cookie', cookie);
+
+    user.password = undefined;
+    return user;
+  }
+
+  validate(data: ValidateRequest): Promise<ValidateResponse> {
+    return firstValueFrom(
+      this.authenticationService.validate({ token: data.token }),
+    );
+  }
 }

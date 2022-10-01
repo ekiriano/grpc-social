@@ -11,8 +11,8 @@ enum Region {
 
 service AuthenticationService{
     rpc register(RegisterRequest) returns (RegisterResponse){}
-    // rpc login(LoginRequest) returns (LoginResponse){}
-    // rpc validate(ValidateRequest) returns (ValidateResponse){}
+    rpc login(LoginRequest) returns (LoginResponse){}
+    rpc validate(ValidateRequest) returns (ValidateResponse){}
 }
 
 // Register
@@ -27,10 +27,15 @@ message RegisterRequest {
   string summary = 7;
 }
 
+// message RegisterResponse {
+//   string firstName = 1;
+//   string lastName = 2;
+//   string email = 3;
+// }
+
 message RegisterResponse {
-  string firstName = 1;
-  string lastName = 2;
-  string email = 3;
+  int32 status = 1;
+  repeated string error = 2;
 }
 
 // Login

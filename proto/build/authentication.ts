@@ -23,9 +23,8 @@ export interface RegisterRequest {
 }
 
 export interface RegisterResponse {
-  firstName: string;
-  lastName: string;
-  email: string;
+  status: number;
+  error: string[];
 }
 
 export interface LoginRequest {
@@ -53,15 +52,23 @@ export const AUTHENTICATION_PACKAGE_NAME = "authentication";
 
 export interface AuthenticationServiceClient {
   register(request: RegisterRequest): Observable<RegisterResponse>;
+
+  login(request: LoginRequest): Observable<LoginResponse>;
+
+  validate(request: ValidateRequest): Observable<ValidateResponse>;
 }
 
 export interface AuthenticationServiceController {
   register(request: RegisterRequest): Promise<RegisterResponse> | Observable<RegisterResponse> | RegisterResponse;
+
+  login(request: LoginRequest): Promise<LoginResponse> | Observable<LoginResponse> | LoginResponse;
+
+  validate(request: ValidateRequest): Promise<ValidateResponse> | Observable<ValidateResponse> | ValidateResponse;
 }
 
 export function AuthenticationServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["register"];
+    const grpcMethods: string[] = ["register", "login", "validate"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("AuthenticationService", method)(constructor.prototype[method], method, descriptor);
